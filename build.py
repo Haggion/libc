@@ -4,8 +4,12 @@ toolchain = "riscv64-none-elf-"
 gcc_options = "-ffreestanding -nostdlib -mno-relax -g -mcmodel=medany"
 
 print("Building...")
-print(call("{}gcc {} -c src/*/* -I include".format(toolchain, gcc_options), shell=True))
+if call("{}gcc {} -c src/*.c src/*/*.c -I include".format(toolchain, gcc_options), shell=True):
+    print("Failed during building")
+    exit()
 
 print("Turning into static library...")
-print(call("{}ar cr libc.a *.o".format(toolchain), shell=True))
+if call("{}ar cr libc.a *.o".format(toolchain), shell=True):
+    print("Failed during archiving")
+
 print("Done")
