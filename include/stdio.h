@@ -7,3 +7,4 @@
 int getchar(void);
 int putchar(int ch);
 int puts(const char* str);
+int printf(const char *restrict format, ...);
