@@ -1,15 +1,24 @@
-#define ADDR__PUT_CHAR 0x8500000C
-#define ADDR__GET_CHAR 0x85000030
+#define ADDR__PUT_CHAR 0x8500000Cull
+#define ADDR__GET_CHAR 0x85000030ull
 
-#include <syscall.h>
 #include <stdio.h>
 
+// the way the OS getchar and libc getchar
+// functions work differs quite a bit
+// The OS getchar just returns the character typed
+
+typedef int (*getchar_fn)(void);
+typedef int (*putchar_fn)(int);
+
+int __sys_getchar(void) {
+    return ((getchar_fn) ADDR__GET_CHAR) ();
+}
+
 int getchar(void) {
-    SYSCALL(ADDR__GET_CHAR)
 }
 
 int putchar(int ch) {
-    SYSCALL(ADDR__PUT_CHAR)
+    return ((putchar_fn) ADDR__PUT_CHAR) (ch);
 }
 
 int puts(const char* str){

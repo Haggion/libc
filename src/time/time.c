@@ -1,10 +1,11 @@
 #include <haggion.h>
-#include <syscall.h>
 
 // for waiting a microsecond
-#define ADDR__DELAY 0x85000084
+#define ADDR__DELAY 0x85000084ull
 
 #define USEC_PER_SEC 1000000
+
+typedef void (*usleep_fn)(useconds_t);
 
 unsigned int sleep(unsigned int seconds) {
     usleep(seconds * USEC_PER_SEC);
@@ -12,6 +13,6 @@ unsigned int sleep(unsigned int seconds) {
 }
 
 int usleep(useconds_t seconds) {
-    SYSCALL(ADDR__DELAY)
+    ((usleep_fn) ADDR__DELAY) (seconds);
     return 0;
 }

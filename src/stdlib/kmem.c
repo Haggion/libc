@@ -1,13 +1,15 @@
 #include <sys/types.h>
-#include <syscall.h>
 
-#define ADDR__MALLOC 0x85000090
-#define ADDR__FREE   0x8500009C
+#define ADDR__MALLOC 0x85000090ull
+#define ADDR__FREE   0x8500009Cull
+
+typedef void *(*malloc_fn)(size_t);
+typedef void (*free_fn)(void*);
 
 void *malloc(size_t size) {
-    SYSCALL(ADDR__MALLOC)
+    return ((malloc_fn) ADDR__MALLOC) (size);
 }
 
 void free(void *pointer) {
-    SYSCALL(ADDR__FREE)
+    ((free_fn) ADDR__FREE) (pointer);
 }

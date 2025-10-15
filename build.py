@@ -1,7 +1,7 @@
 from subprocess import call
 
 toolchain = "riscv64-none-elf-"
-gcc_options = "-ffreestanding -nostdlib -mno-relax -g -mcmodel=medany"
+gcc_options = "-ffreestanding -nostdlib -mcmodel=medany -Os"
 
 print("Building...")
 if call("{}gcc {} -c src/*.c src/*/*.c -I include".format(toolchain, gcc_options), shell=True):
