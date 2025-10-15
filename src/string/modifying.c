@@ -1,6 +1,6 @@
 #include <sys/types.h>
 
-char *strcat(char *dest, const char *src) {
+char *strcat(char *restrict dest, const char *restrict src) {
     char *strstart = dest;
 
     // get end of dest
@@ -19,7 +19,7 @@ char *strcat(char *dest, const char *src) {
     return strstart;
 }
 
-char *strncat(char *dest, const char *src, size_t n) {
+char *strncat(char *restrict dest, const char *restrict src, size_t n) {
     char *strstart = dest;
 
     // get end of dest

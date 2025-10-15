@@ -22,7 +22,7 @@ int atoi(const char *nptr) {
 }
 
 char *itoa(int value, char *str, int base) {
-    char *strstart;
+    char *strstart = str;
     if (value == 0) {
         *str = '0';
         *++str = 0;
