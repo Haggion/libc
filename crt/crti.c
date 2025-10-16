@@ -2,6 +2,7 @@ int main();
 
 #include <specific/filedefs.h>
 #include <specific/kmem.h>
+#include <specific/sysio.h>
 
 FILE *stdin;
 FILE *stdout;
@@ -16,6 +17,7 @@ void crt_init(void) {
     stdin->unread    = 0;
     stdin->buf       = malloc(4096);
     stdin->bufsize   = 4096;
+    stdin->read_ch   = __sys_getchar;
 
     main();
 }

@@ -5,8 +5,10 @@
 
 #include <specific/filedefs.h>
 
-// returns character written on success, and EOF otherwise
 int getchar(void);
+int fgetc(FILE* stream);
+int getc(FILE* stream);
+
 int putchar(int ch);
 int puts(const char* str);
 int printf(const char *restrict format, ...);

@@ -11,27 +11,42 @@ typedef int (*getchar_fn)(void);
 typedef int (*putchar_fn)(int);
 
 int __sys_getchar(void) {
-    return ((getchar_fn) ADDR__GET_CHAR) ();
+    char ch = ((getchar_fn) ADDR__GET_CHAR) ();
+
+    if(ch == 13) {
+        puts ("");
+        return EOF;
+    }
+
+    // people like to see what they're typing
+    putchar(ch);
+    return ch;
 }
 
 int getchar(void) {
-    if(stdin->unread) goto pop_buf;
+    return getc(stdin);
+}
+
+int fgetc(FILE* stream) {
+    return getc(stream);
+}
+
+int getc(FILE* stream) {
+    if(stream->unread) goto pop_buf;
     char ch;
 
-    while ((ch = __sys_getchar()) != 13) {
-        stdin->buf[stdin->write_pos] = ch;
-        stdin->write_pos = (stdin->write_pos + 1) % stdin->bufsize;
-        stdin->unread++;
-
-        putchar(ch);
+    while ((ch = (stream->read_ch)()) != (char) EOF) {
+        stream->buf[stream->write_pos] = ch;
+        stream->write_pos = (stream->write_pos + 1) % stream->bufsize;
+        stream->unread++;
     }
 
-    puts ("");
+    if(!stream->unread) return -1;
 
 pop_buf:
-    ch = stdin->buf[stdin->read_pos];
-    stdin->read_pos = (stdin->read_pos + 1) % stdin->bufsize;
-    stdin->unread--;
+    ch = stream->buf[stream->read_pos];
+    stream->read_pos = (stream->read_pos + 1) % stream->bufsize;
+    stream->unread--;
 
     return ch;
 }
