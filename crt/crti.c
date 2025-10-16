@@ -17,7 +17,7 @@ void crt_init(void) {
     stdin->unread    = 0;
     stdin->buf       = malloc(4096);
     stdin->bufsize   = 4096;
-    stdin->read_ch   = __sys_getchar;
+    stdin->read_next = __sys_getchar;
 
     main();
 }

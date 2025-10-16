@@ -1,6 +1,6 @@
 #pragma once
 
-typedef int (*read_ch_fn) (void);
+typedef int (*read_next_fn) (void);
 
 struct _FILE {
     unsigned address;
@@ -13,7 +13,7 @@ struct _FILE {
 
     unsigned unread;
 
-    read_ch_fn read_ch;
+    read_next_fn read_next;
 };
 
 

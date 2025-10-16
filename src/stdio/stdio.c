@@ -11,16 +11,21 @@ typedef int (*getchar_fn)(void);
 typedef int (*putchar_fn)(int);
 
 int __sys_getchar(void) {
-    char ch = ((getchar_fn) ADDR__GET_CHAR) ();
+    getchar_fn read = ((getchar_fn) ADDR__GET_CHAR);
+    char ch;
 
-    if(ch == 13) {
-        puts ("");
-        return EOF;
-    }
+    do {
+        ch = read();
+        putchar (ch);
 
-    // people like to see what they're typing
-    putchar(ch);
-    return ch;
+        stdin->buf[stdin->write_pos] = ch;
+        stdin->write_pos = (stdin->write_pos + 1) % stdin->bufsize;
+        stdin->unread++;
+    } while (ch != '\r');
+
+    if(!stdin->unread) return EOF;
+
+    return stdin->unread;
 }
 
 int getchar(void) {
@@ -33,18 +38,11 @@ int fgetc(FILE* stream) {
 
 int getc(FILE* stream) {
     if(stream->unread) goto pop_buf;
-    char ch;
-
-    while ((ch = (stream->read_ch)()) != (char) EOF) {
-        stream->buf[stream->write_pos] = ch;
-        stream->write_pos = (stream->write_pos + 1) % stream->bufsize;
-        stream->unread++;
-    }
-
-    if(!stream->unread) return -1;
+    
+    if(stream->read_next() == EOF) return EOF;
 
 pop_buf:
-    ch = stream->buf[stream->read_pos];
+    const char ch = stream->buf[stream->read_pos];
     stream->read_pos = (stream->read_pos + 1) % stream->bufsize;
     stream->unread--;
 
@@ -52,6 +50,10 @@ pop_buf:
 }
 
 int putchar(int ch) {
+    if (ch == '\r' || ch == '\n') {
+        ((putchar_fn) ADDR__PUT_CHAR) ('\n');
+        return ((putchar_fn) ADDR__PUT_CHAR) ('\r');
+    }
     return ((putchar_fn) ADDR__PUT_CHAR) (ch);
 }
 
@@ -61,7 +63,6 @@ int puts(const char* str){
         putchar (ch);
     }
 
-    putchar ('\n');
     putchar ('\r');
 
     return 0;

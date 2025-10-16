@@ -3,7 +3,8 @@
 char* fgets(char *restrict str, int count, FILE *restrict stream) {
     char *strstart = str;
 
-    while (count--) *str++ = getc(stream);
+    while ((*str++ = getc(stream)) != '\r' && --count);
+    *str++ = 0;
 
     return strstart;
 }
