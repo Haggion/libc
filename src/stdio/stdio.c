@@ -15,6 +15,25 @@ int __sys_getchar(void) {
 }
 
 int getchar(void) {
+    if(stdin->unread) goto pop_buf;
+    char ch;
+
+    while ((ch = __sys_getchar()) != 13) {
+        stdin->buf[stdin->write_pos] = ch;
+        stdin->write_pos = (stdin->write_pos + 1) % stdin->bufsize;
+        stdin->unread++;
+
+        putchar(ch);
+    }
+
+    puts ("");
+
+pop_buf:
+    ch = stdin->buf[stdin->read_pos];
+    stdin->read_pos = (stdin->read_pos + 1) % stdin->bufsize;
+    stdin->unread--;
+
+    return ch;
 }
 
 int putchar(int ch) {
