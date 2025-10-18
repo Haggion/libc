@@ -1,4 +1,4 @@
-int main();
+int main(int argc, char *argv[]);
 
 #include <specific/filedefs.h>
 #include <specific/kmem.h>
@@ -8,7 +8,7 @@ FILE *stdin;
 FILE *stdout;
 FILE *stderr;
 
-void crt_init(void) {
+void crt_init(int argc, char *argv[]) {
     malloc(1024 * 64);
     stdin = malloc(sizeof(FILE));
 
@@ -19,5 +19,5 @@ void crt_init(void) {
     stdin->bufsize   = 4096;
     stdin->read_next = __sys_getchar;
 
-    main();
+    main(argc, argv);
 }
