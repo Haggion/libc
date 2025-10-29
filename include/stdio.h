@@ -14,3 +14,5 @@ int puts(const char* str);
 int printf(const char *restrict format, ...);
 
 char* fgets(char* restrict str, int count, FILE* restrict stream);
+
+FILE *fopen(const char *restrict path, const char *restrict mode);
